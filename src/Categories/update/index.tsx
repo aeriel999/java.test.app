@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
-import {Button, Form, Input, Row, Upload, UploadFile} from "antd";
+import {Button, Form, Input, Row, Upload, UploadFile, UploadProps} from "antd";
 import type {UploadChangeParam} from "antd/es/upload";
 import { PlusOutlined} from "@ant-design/icons";
 import { ICategoryEdit, IUploadedFile} from "../types.ts";
@@ -49,7 +49,7 @@ const EditCategory: React.FC = () => {
         return <p>Loading...</p>;
     }
 
-    const imgUrl = BASE_URL + "/uploading/150_" + categoryDetails.image;
+   // const imgUrl = BASE_URL + "/uploading/150_" + categoryDetails.image;
 
     const onSubmit = async (values: ICategoryEdit) => {
         try {
@@ -64,6 +64,9 @@ const EditCategory: React.FC = () => {
             console.log("Exception create category", ex);
         }
     }
+
+    const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) =>
+        setFileList(newFileList);
 
     return (
 
@@ -84,7 +87,7 @@ const EditCategory: React.FC = () => {
                 >
                     <Form.Item
                         name="id"
-                        htmlFor="id"
+                       hidden
                     />
                     <Form.Item
                         label="Name"
@@ -117,7 +120,6 @@ const EditCategory: React.FC = () => {
                             const image = e?.fileList[0] as IUploadedFile;
                             return image?.originFileObj;
                         }}
-                        rules={[{required: true, message: 'Choose image for category!'}]}
                     >
                         <Upload
                             showUploadList={{showPreviewIcon: false}}
@@ -126,6 +128,7 @@ const EditCategory: React.FC = () => {
                             listType="picture-card"
                             fileList={fileList}
                             maxCount={1}
+                            onChange={handleChange}
                         >
                             <div>
                                 <PlusOutlined/>

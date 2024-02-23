@@ -81,6 +81,7 @@ const AddCategory = () => {
                             accept="image/*"
                             listType="picture-card"
                             maxCount={1}
+
                         >
                             <div>
                                 <PlusOutlined/>

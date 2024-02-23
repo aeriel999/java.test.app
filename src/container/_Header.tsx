@@ -1,8 +1,12 @@
-import { Layout, Menu} from 'antd';
-import { Link, useLocation } from 'react-router-dom';
+import {Input, Layout, Menu, Space,} from 'antd';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
+import type {SearchProps} from "antd/es/input/Search";
+
 
 
 const { Header } = Layout;
+const { Search } = Input;
+
 
 const items1 = ['Home', 'Add'].map((key) => ({
     key,
@@ -13,8 +17,10 @@ const items1 = ['Home', 'Add'].map((key) => ({
 
 const DefaultHeader = () => {
     const location = useLocation();
-
-
+    const navigate = useNavigate();
+    const onSearch: SearchProps['onSearch'] = (searchTerm) => {
+        navigate(`/categories/search/${searchTerm}`);
+    };
 
     return (
         <Header style={{ display: 'flex', alignItems: 'center' }}>
@@ -31,8 +37,15 @@ const DefaultHeader = () => {
                     </Menu.Item>
                 ))}
             </Menu>
+            <Space direction="horizontal">
+                <Search
+                    placeholder="input category name"
+                    onSearch={onSearch}
+                    style={{ width: 200, margin: 15 }}
+                    enterButton
+                />
 
-
+            </Space>
         </Header>
     );
 };

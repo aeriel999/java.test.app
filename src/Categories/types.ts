@@ -34,3 +34,9 @@ export  type FieldType = {
     name?: string;
     description?: string;
 };
+
+export interface IGetCategories {
+    content: ICategoryItem[],
+    totalPages: number,
+    totalElements: number,
+}
