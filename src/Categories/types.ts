@@ -20,7 +20,7 @@ export interface ICategoryItem {
     id: number;
     name: string;
     description: string;
-    file: string;
+    image: string;
 }
 
 export interface ICategoryEdit {
@@ -39,4 +39,11 @@ export interface IGetCategories {
     content: ICategoryItem[],
     totalPages: number,
     totalElements: number,
+    number: number
+}
+
+export interface ICategorySearch{
+    keyword?: string,
+    page: number,
+    size: number
 }
