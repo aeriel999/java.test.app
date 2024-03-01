@@ -1,12 +1,12 @@
 import {ICategoryItem} from "../types.ts";
-import {Button, Card, Col, Popconfirm} from "antd";
+import {Button, Card, Col, Popconfirm, Typography} from "antd";
 //import {APP_ENV} from "../../env";
 //import NotImage from '../../assets/NotImage.png';
 import Meta from "antd/es/card/Meta";
 import {DeleteOutlined, EditOutlined} from '@ant-design/icons';
 import {Link} from "react-router-dom";
 
-//const { Title } = Typography;
+const { Title } = Typography;
 
 interface ICategoryCardProps {
     item: ICategoryItem,
@@ -15,19 +15,19 @@ interface ICategoryCardProps {
 
 const CategoryCard: React.FC<ICategoryCardProps> = (props) => {
     const {item, handleDelete} = props;
-    const {id, name, image} = item;
+    const {id, name, image, description} = item;
 
 console.log("image", image)
     return (
         <>
-            <Col style={{padding: 20, marginBottom: 10}} xxl={8} lg={12} md={18} sm={28}>
+            <Col style={{padding: 20, marginBottom: 50}} xxl={8} lg={12} md={18} sm={28}>
                 <Card
                     bodyStyle={{flex: '1', paddingBlock: '10px'}}
-                    style={{height: 280, display: 'flex', flexDirection: 'column', paddingTop: '40px'}}
+                    style={{height: 380, display: 'flex', flexDirection: 'column', paddingTop: '40px'}}
                     hoverable
                     cover={
                         <img
-                            style={{height: '200px', objectFit: 'contain'}}
+                            style={{height: '300px', objectFit: 'contain'}}
                             alt={name}
                            // src={image ? `${APP_ENV.BASE_URL}/uploading/300_${image}` : NotImage}
                             src={image}
@@ -62,9 +62,9 @@ console.log("image", image)
 
                     <Meta
                         title={name}
-                        // description={
-                        //     <Title level={5} type="success">{description}</Title>
-                        // }
+                        description={
+                            <Title level={5} type="success">{description.substring(0, 35)} ...</Title>
+                        }
                     />
                 </Card>
             </Col>

@@ -8,7 +8,7 @@ const { Header } = Layout;
 const { Search } = Input;
 
 
-const items1 = ['Home', 'Add'].map((key) => ({
+const items1 = ['Home', 'Products'].map((key) => ({
     key,
     label: `${key}`,
     link: key.toLowerCase(), // Add a link property based on the item key

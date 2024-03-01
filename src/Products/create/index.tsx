@@ -11,14 +11,12 @@ const AddProduct = () => {
     const {categoryId} = useParams(); //
     const navigate = useNavigate();
 
-    console.log("categoryId", categoryId)
-
     const [form] = Form.useForm<IProductCreate>();
 
     const onSubmit = async (values: IProductCreate) => {
-
         const data : IProductCreate = {
             ...values,
+            // @ts-ignore
             category_id: categoryId
         }
         console.log("data", data);
@@ -120,7 +118,6 @@ const AddProduct = () => {
             </Row>
         </>
     )
-
 }
 
 export default AddProduct;
