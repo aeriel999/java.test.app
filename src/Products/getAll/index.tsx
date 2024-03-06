@@ -1,11 +1,15 @@
-import {Button, Col, Collapse, Form, Input, Pagination, Row} from "antd";
-import { useSearchParams} from "react-router-dom";
+import {Button, Col, Collapse, Form, Input, Pagination, Row, Select} from "antd";
+import {Link, useSearchParams} from "react-router-dom";
 import http_common from "../../http_common.ts";
 import {useEffect, useState} from "react";
-import {IGetProducts, IProductSearch} from "../types.ts";
+import {ICategoryName, IGetProducts, IProductSearch} from "../types.ts";
 import ProductCard from "./ProductCard.tsx";
 
 const GetProducts = () => {
+    const [categories, setCategories] = useState<ICategoryName[]>([]);
+
+   // const categoriesData = categories?.map(item => ({label: item.name, value: item.id}));
+
     const [data, setData] = useState<IGetProducts>({
         list: [],
         totalCount: 0
@@ -14,9 +18,9 @@ const GetProducts = () => {
     const [searchParams, setSearchParams] = useSearchParams();
 
     const [formParams, setFormParams] = useState<IProductSearch>({
-        keywordName: searchParams.get('keywordName') || "",
-        keywordDescription: searchParams.get('keywordName') || "",
-        keywordCategory: searchParams.get('keywordName') || "",
+        name: searchParams.get('keywordName') || "",
+        description: searchParams.get('keywordDescription') || "",
+        categoryId: Number(searchParams.get('keywordCategory')) || 0,
         page: Number(searchParams.get('page')) || 1,
         size: Number(searchParams.get('size')) || 3
     });
@@ -24,15 +28,24 @@ const GetProducts = () => {
     const [form] = Form.useForm<IProductSearch>();
 
     const onSubmit = async (values: IProductSearch) => {
-        findCategories({...formParams, page: 1, keywordName: values.keywordName, keywordDescription: values.keywordDescription, keywordCategory: values.keywordCategory});
+        findCategories({...formParams, page: 1, name: values.name,
+            description: values.description, categoryId: values.categoryId});
     }
 
     useEffect(() => {
         const fetchData = async () => {
             try {
+
+                console.log("formParams", formParams)
                 const response =
                     await http_common
-                        .get<IGetProducts>(`/api/products/search?keywordName=${formParams.keywordName}&keywordCategory=${formParams.keywordCategory}&keywordDescription=${formParams.keywordDescription}&page=${(formParams.page-1)}&size=${formParams.size}`);
+                        .get<IGetProducts>(`/api/products/search`,
+                            {
+                                params: {
+                                    ...formParams,
+                                    page: formParams.page-1
+                                }
+                            });
                 setData(response.data);
                 // setLoading(false);
             } catch (error) {
@@ -41,6 +54,15 @@ const GetProducts = () => {
         };
         // setLoading(true);
         fetchData();
+
+        try {
+            http_common.get<ICategoryName[]>("/api/categories/names")
+                .then(resp=> {
+                    setCategories(resp.data);
+                });
+        }catch (error) {
+            console.error('Error fetching categories:', error);
+        }
     }, [JSON.stringify(formParams)]);
 
     const {list,  totalCount } = data;
@@ -78,11 +100,11 @@ const GetProducts = () => {
     return (
         <>
             <h1>List of Products</h1>
-            {/*<Link to={"/categories/add"}>*/}
-            {/*    <Button type="primary" style={{margin: '5px'}}>*/}
-            {/*        ADD +*/}
-            {/*    </Button>*/}
-            {/*</Link>*/}
+            <Link to={"/products/add"}>
+                <Button type="primary" style={{margin: '5px'}}>
+                    ADD +
+                </Button>
+            </Link>
             <Collapse defaultActiveKey={0}>
                 <Collapse.Panel key={1} header={"Search Panel"}>
                     <Row gutter={16}>
@@ -99,26 +121,36 @@ const GetProducts = () => {
                         >
                             <Form.Item
                                 label="Name"
-                                name="keywordName"
-                                htmlFor="keywordName"
+                                name="name"
+                                htmlFor="name"
                             >
-                                <Input autoComplete="keyword"/>
+                                <Input autoComplete="keywordName"/>
                             </Form.Item>
 
                             <Form.Item
                                 label="Description"
-                                name="keywordDescription"
-                                htmlFor="keywordDescription"
+                                name="description"
+                                htmlFor="description"
                             >
-                                <Input autoComplete="keyword"/>
+                                <Input autoComplete="keywordDescription"/>
                             </Form.Item>
 
                             <Form.Item
                                 label="Category"
-                                name="keywordCategory"
-                                htmlFor="keywordCategory"
+                                name="categoryId"
+                                htmlFor="categoryId"
                             >
-                                <Input autoComplete="keyword"/>
+                                <Select
+                                    defaultValue={"All Categories"}
+                                >
+                                    <Select.Option value="0">All Categories</Select.Option>
+                                    {
+                                        categories.map(x=> (
+                                            <Select.Option value={x.id}>{x.name}</Select.Option>
+                                        ))
+                                    }
+
+                                </Select>
                             </Form.Item>
 
                             <Row style={{display: 'flex', justifyContent: 'center'}}>
@@ -149,7 +181,7 @@ const GetProducts = () => {
                 />
             </Row>
 
-            <Row gutter={16}>
+            <Row gutter={16} style={{marginBottom: '25px'}}>
                 <Col span={24}>
                     <Row>
                         {data.list.length === 0 ? (

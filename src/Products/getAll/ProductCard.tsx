@@ -15,11 +15,9 @@ const ProductCard: React.FC<IProductCardProps> = (props) => {
     const {item, handleDelete} = props;
     const {id, name, files, description, price} = item;
 
-    console.log("item", item)
-
     return (
         <>
-            <Col style={{padding: 20, marginBottom: 50}} xxl={8} lg={12} md={18} sm={28}>
+            <Col style={{padding: 20, marginBottom: 100}} xxl={8} lg={12} md={18} sm={28}>
     <Card
         bodyStyle={{flex: '1', paddingBlock: '10px'}}
     style={{height: 380, display: 'flex', flexDirection: 'column', paddingTop: '40px'}}
@@ -35,7 +33,7 @@ const ProductCard: React.FC<IProductCardProps> = (props) => {
     />
 }
     actions={[
-    <Link to={`/categories/edit/${id}`}>
+    <Link to={`/product/edit/${id}`}>
     <Button type="primary" icon={<EditOutlined/>}>
     Edit
     </Button>

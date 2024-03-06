@@ -8,6 +8,7 @@ import EditCategory from "./Categories/update";
 import TestPage from "./Categories/test.tsx";
 import AddProduct from "./Products/create";
 import GetProducts from "./Products/getAll";
+import EditProduct from "./Products/update";
 
 function App() {
     //const [count, setCount] = useState(0)
@@ -21,6 +22,8 @@ function App() {
                     <Route path="/categories/search/:searchTerm" element={<GetCategories />} />
                     <Route path="/categories/add" element={<AddCategory/>}/>
                     <Route path="/products/add/:categoryId" element={<AddProduct/>}/>
+                    <Route path="/products/add/" element={<AddProduct/>}/>
+                    <Route path="/product/edit/:productId" element={<EditProduct/>}/>
                     <Route path="/products" element={<GetProducts/>}/>
                     <Route path="/categories/edit/:categoryId" element={<EditCategory/>}/>
                     <Route path={"test"} element={<TestPage/>}/>
