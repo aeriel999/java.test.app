@@ -1,16 +1,13 @@
-import {combineReducers} from "redux";
-import {configureStore} from "@reduxjs/toolkit";
-import {thunk} from "redux-thunk";
-import AuthReducer from "../auth/login/AuthReducer.ts";
+import { configureStore } from '@reduxjs/toolkit';
+import accountReducer from "./accounts/account.slice.ts";
 
-export const rootReducer = combineReducers({
-    auth: AuthReducer
+export const store = configureStore({
+    reducer: {
+        //category: categoryReducer,
+        account: accountReducer
+    },
 });
 
-//HW
-//store is the place we save the state
-export  const  store = configureStore({
-    reducer: rootReducer,
-    devTools: true,
-    middleware: [thunk]
-});
+// Типізація Redux
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

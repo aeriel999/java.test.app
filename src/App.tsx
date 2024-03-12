@@ -5,10 +5,12 @@ import DefaultLayout from "./container/layots/_Layout.tsx";
 import GetCategories from "./Categories/getAll";
 import AddCategory from "./Categories/create";
 import EditCategory from "./Categories/update";
-import TestPage from "./Categories/test.tsx";
+
 import AddProduct from "./Products/create";
 import GetProducts from "./Products/getAll";
 import EditProduct from "./Products/update";
+import Login from "./views/login";
+import Register from "./views/register";
 
 function App() {
     //const [count, setCount] = useState(0)
@@ -26,7 +28,9 @@ function App() {
                     <Route path="/product/edit/:productId" element={<EditProduct/>}/>
                     <Route path="/products" element={<GetProducts/>}/>
                     <Route path="/categories/edit/:categoryId" element={<EditCategory/>}/>
-                    <Route path={"test"} element={<TestPage/>}/>
+                    <Route path={"account/login"} element={<Login/>}/>
+                    <Route path={"account/register"} element={<Register/>}/>
+
                     {/*<Route path={"/register"} element={<Register/>} />*/}
                     {/*<Route path={"/login"} element={<Login/>} />*/}
                     {/*<Route path={"/products"} element={<ProductCreatePage/>} />*/}

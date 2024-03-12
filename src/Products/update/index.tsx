@@ -1,20 +1,34 @@
 import {useNavigate, useParams} from "react-router-dom";
-import {Button, Form, Input, Row, Select, Upload, UploadFile} from "antd";
+import {Button, Form, Input, Row, Select, Upload, UploadFile, UploadProps} from "antd";
 import {useEffect, useState} from "react";
-import TextArea from "antd/es/input/TextArea";
-import {UploadChangeParam} from "antd/es/upload";
 import {ICategoryName, IProductEdit, IProductEditPhoto, IProductItem} from "../types.ts";
+import TextArea from "antd/es/input/TextArea";
+import {PlusOutlined} from "@ant-design/icons";
+import type { DragEndEvent } from '@dnd-kit/core';
+import {
+    arrayMove,
+    SortableContext,
+    horizontalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import {DndContext, PointerSensor, useSensor} from '@dnd-kit/core';
 import http_common from "../../http_common.ts";
 import {APP_ENV} from "../../env";
-import {PlusOutlined} from "@ant-design/icons";
+import DraggableUploadListItem from "../../common/DraggableUploadListItem.tsx";
 
 const ProductEditPage : React.FC = () => {
-    const {productId} = useParams();
     const navigate = useNavigate();
+
+    // const [messageApi, contextHolder] = message.useMessage();
+
     const [categories, setCategories] = useState<ICategoryName[]>([]);
+
+    const {productId} = useParams();
+
     const [fileList, setFileList] = useState<UploadFile[]>([]);
-    const [deletedFileList, setDeletedFileList] = useState<IProductEditPhoto[]>([]);
-    const [newFileList, setNewFileList] = useState<IProductEditPhoto[]>([]);
+
+    const sensor = useSensor(PointerSensor, {
+        activationConstraint: { distance: 10 },
+    });
 
     const [product, setProduct] = useState<IProductItem>({
         id: 0,
@@ -68,91 +82,56 @@ const ProductEditPage : React.FC = () => {
         }
     };
 
+    const onDragEnd = ({ active, over }: DragEndEvent) => {
+        if (active.id !== over?.id) {
+            setFileList((prev) => {
+                const activeIndex = prev.findIndex((i) => i.uid === active.id);
+                const overIndex = prev.findIndex((i) => i.uid === over?.id);
+                return arrayMove(prev, activeIndex, overIndex);
+            });
+        }
+    };
+
+    const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
+        setFileList(newFileList);
+    };
+
+    const uploadButton = (
+        <button style={{ border: 0, background: 'none' }} type="button">
+            <PlusOutlined />
+            <div style={{ marginTop: 8 }}>Upload</div>
+        </button>
+    );
+
     const onSubmit = async (values: IProductEdit) => {
-        const data : IProductEdit = {
-            ...values,
-            oldPhotos: deletedFileList,
-            newPhotos: newFileList
+
+        const oldPhotos : IProductEditPhoto[] = [];
+        const newPhotos: IProductEditPhoto[] = [];
+
+        for (let i = 0; i < fileList.length; i++) {
+            if (!fileList[i].size){
+                oldPhotos.push({photo: fileList[i].name, priority: i});
+            }
+            else {
+                const base64Content = fileList[i].thumbUrl?.split(",")[1];
+                newPhotos.push({photo: base64Content, priority: i});
+            }
         }
 
-        console.log("data", data)
+        const sendData: IProductEdit = {...values, id: Number(productId), newPhotos: newPhotos, oldPhotos: oldPhotos};
+
         try {
-            await http_common.put(`/api/products`, data, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-            navigate('/');
+            console.log("Send Data", sendData);
+            await http_common.put("/api/products", sendData);
+            navigate('/products');
         }
         catch(ex) {
             console.log("Exception create category", ex);
         }
+        console.log("data submit", sendData);
     }
 
     const optionsData = categories?.map(item => ({label: item.name, value: item.id}));
-
-    const handleFileChange = async ( e: UploadChangeParam ) => {
-       const fileList = e?.fileList;
-       const  newFile = e?.file;
-       const  status = e?.file.status;
-
-       if(status === "removed")
-       {
-           console.log("fileList", fileList)
-
-           const removedFiles = fileList.filter(
-               (file) => !fileList.some((newFile) => newFile.uid === file.uid)
-           );
-
-           const removedFileList: IProductEditPhoto[] = removedFiles.map((file) => ({
-               photo: file.name,
-               priority: 0,
-           }));
-
-           setDeletedFileList(removedFileList);
-
-           setFileList(fileList);
-       }else{
-            console.log("newFile", newFile)
-           console.log("fileList", fileList)
-
-           try {
-               const fileString = await new Promise<string>((resolve, reject) => {
-                   const reader = new FileReader();
-                   reader.onloadend = () => {
-                       resolve(reader.result as string);
-                   };
-                   reader.onerror = reject;
-
-                   reader.readAsDataURL(newFile);
-               });
-
-               console.log("fileString", fileString);
-               const base64Content = fileString.split(",")[1];
-
-               setFileList((prevFileList) => [
-                   ...prevFileList,
-                   {
-                       uid: newFile.uid,
-                       name: newFile.name,
-                       status: "done",
-                       url: fileString, // or use a placeholder URL
-                   },
-               ]);
-
-               const newFileAdd : IProductEditPhoto[] = {
-                   photo: base64Content,
-                   priority: fileList?.length,
-               }
-               console.log("newFileAdd", newFileAdd);
-
-               setNewFileList(newFileAdd);
-
-           } catch (error) {
-               console.error("Error converting file to Base64:", error);
-           }
-       }
-    };
 
     return (
         <>
@@ -170,7 +149,6 @@ const ProductEditPage : React.FC = () => {
                           padding: 20,
                       }}
                 >
-
                     <Form.Item
                         label="Category"
                         name="category_id"
@@ -180,7 +158,7 @@ const ProductEditPage : React.FC = () => {
                         ]}
                     >
                         <Select
-                            placeholder="Оберіть категорію: "
+                            placeholder="Search a category: "
                             options={optionsData}
                         />
                     </Form.Item>
@@ -220,41 +198,40 @@ const ProductEditPage : React.FC = () => {
                     >
                         <TextArea/>
                     </Form.Item>
-                    <Form.Item
-                        name="files"
-                        label="Images"
-                        valuePropName="files"
-                        getValueFromEvent={(e: UploadChangeParam) => {
-                            handleFileChange(e);
-                        }}
-                    >
-                        <Upload
-                            showUploadList={{showPreviewIcon: false}}
-                            beforeUpload={() => false}
-                            accept="image/*"
-                            fileList={fileList}
-                            listType="picture-card"
-                            maxCount={10}
-                        >
-                            <div>
-                                <PlusOutlined/>
-                                <div style={{marginTop: 8}}>Upload</div>
-                            </div>
-                        </Upload>
-                    </Form.Item>
 
+                    <Form.Item
+                        label="Image"
+                    >
+                        <DndContext sensors={[sensor]} onDragEnd={onDragEnd}>
+                            <SortableContext items={fileList.map((i) =>
+                                i.uid)} strategy={horizontalListSortingStrategy}>
+                                <Upload
+                                    showUploadList={{showPreviewIcon: false}}
+                                    beforeUpload={() => false}
+                                    accept="image/*"
+                                    listType="picture-card"
+                                    fileList={fileList}
+                                    onChange={handleChange}
+                                    itemRender={(originNode, file) => (
+                                        <DraggableUploadListItem originNode={originNode} file={file} />
+                                    )}
+                                >
+                                    {fileList.length >= 8 ? null : uploadButton}
+                                </Upload>
+                            </SortableContext>
+                        </DndContext>
+                    </Form.Item>
 
                     <Row style={{display: 'flex', justifyContent: 'center'}}>
                         <Button style={{margin: 10}} type="primary" htmlType="submit">
-                            Add
+                            Зберети
                         </Button>
-                        <Button style={{margin: 10}} htmlType="button" onClick={() =>{ navigate('/')}}>
+                        <Button style={{margin: 10}} htmlType="button" onClick={() =>{ navigate('/product')}}>
                             Cancel
                         </Button>
                     </Row>
                 </Form>
             </Row>
-
         </>
     )
 }
