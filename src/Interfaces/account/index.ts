@@ -8,7 +8,7 @@ export interface ILogin {
 export interface IUser{
     name: string,
     email: string,
-    image: string,
+    roles: string[],
 }
 
 export interface IAccountState {

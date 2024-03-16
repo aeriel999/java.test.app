@@ -1,0 +1,51 @@
+.body{
+    min-height: 100vh;
+}
+
+.side-menu{
+    background-color: cadetblue;
+    min-height: 100vh
+}
+
+.header{
+    min-height: 7vh;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.content{
+    min-height: 93vh;
+    margin: 10px;
+    background-color: #F1F5F9;
+}
+
+.logo{
+    padding: 10px;
+    font-size: 30px;
+    color: white;
+}
+
+.menuTitle{
+    padding: 20px;
+    font-size: 25px;
+    color:  aliceblue;
+}
+
+
+.menu{
+    max-width: 100%;
+    margin: 10px;
+}
+
+.sideMenuBlock{
+    background-color: cadetblue;
+    font-size: 1.2em;
+}
+
+.sideMenuBlock > div > ul > li:hover{
+    background-color: red;
+
+}
+
+.search{
+    margin: 10px;
+}

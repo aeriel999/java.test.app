@@ -134,7 +134,7 @@ const Register : React.FC = () => {
 
         <Form.Item style={{display: 'flex', justifyContent: 'center'}}>
     <Button size="large" type="primary" htmlType="submit" style={{paddingInline: 50}}>
-    Вхід
+    Register
     </Button>
     </Form.Item>
 

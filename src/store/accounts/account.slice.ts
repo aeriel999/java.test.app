@@ -12,11 +12,11 @@ function isRejectedAction(action: AnyAction): action is RejectedAction {
     return action.type.endsWith('/rejected');
 }
 const updateUserState = (state: IAccountState, token: string): void => {
-    const { name, email, image } = jwtDecode<IUser>(token);
+    const { name, email, roles } = jwtDecode<IUser>(token);
     state.user = {
         name,
         email,
-        image,
+        roles,
     };
     state.token = token;
     state.isLogin = true;

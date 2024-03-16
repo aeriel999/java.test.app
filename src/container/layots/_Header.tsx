@@ -1,12 +1,14 @@
-import {Input, Layout, Menu, Space,} from 'antd';
-import {Link, useLocation, useNavigate} from 'react-router-dom';
-import type {SearchProps} from "antd/es/input/Search";
-
+import {Avatar, Button, Input, Layout, Menu, Space,} from 'antd';
+import {Link, useLocation} from 'react-router-dom';
+import {useAppDispatch, useAppSelector} from "../../hooks/redux";
+import ButtonGroup from "antd/es/button/button-group";
+import {UserOutlined, PoweroffOutlined} from '@ant-design/icons';
+import {logout} from "../../store/accounts/account.slice.ts";
+import {APP_ENV} from "../../env";
 
 
 const { Header } = Layout;
 const { Search } = Input;
-
 
 const items1 = ['Home', 'Products'].map((key) => ({
     key,
@@ -16,10 +18,14 @@ const items1 = ['Home', 'Products'].map((key) => ({
 
 
 const DefaultHeader = () => {
+    const dispatch = useAppDispatch();
     const location = useLocation();
-    const navigate = useNavigate();
-    const onSearch: SearchProps['onSearch'] = (searchTerm) => {
-        navigate(`/categories/search/${searchTerm}`);
+
+    const {isLogin, user} = useAppSelector(state => state.account);
+
+    const handleLogout = () => {
+        //console.log("Logout user");
+        dispatch(logout());
     };
 
     return (
@@ -40,12 +46,43 @@ const DefaultHeader = () => {
             <Space direction="horizontal">
                 <Search
                     placeholder="input category name"
-                    onSearch={onSearch}
+                   // onSearch={onSearch}
                     style={{ width: 200, margin: 15 }}
                     enterButton
                 />
 
             </Space>
+            {isLogin ? (
+                <ButtonGroup size="large">
+                    <Button
+                        type="primary"
+                        style={{display: 'flex'}}
+                        icon={<Avatar  size="small" src={`${APP_ENV.BASE_URL}images/${user?.name}`}/>}
+                    >
+                        {user?.name}
+                    </Button>
+                    <Button
+                        type="primary"
+                        icon={<PoweroffOutlined/>}
+                        onClick={() => handleLogout()}
+                    />
+                </ButtonGroup>
+
+            ) : (
+                <>
+                <Link to="account/login" style={{color: 'inherit', textDecoration: 'none'}}>
+                    <Button type="primary" icon={<UserOutlined/>}>
+                        Sign-in
+                    </Button>
+                </Link>
+
+                    <Link to="account/register" style={{color: 'inherit', textDecoration: 'none'}}>
+                        <Button type="primary" icon={<UserOutlined/>}>
+                           Register
+                        </Button>
+                    </Link>
+                </>
+            )}
         </Header>
     );
 };
