@@ -4,8 +4,11 @@ import {ICategorySearch, IGetCategories} from "../types.ts";
 import http_common from "../../http_common.ts";
 import {useEffect, useState} from "react";
 import CategoryCard from "./CategoryCard.tsx";
+import {useAppSelector} from "../../hooks/redux";
 
 const GetCategories = () => {
+    const {user} = useAppSelector(state => state.account);
+
     const [data, setData] = useState<IGetCategories>({
         list: [],
         totalCount: 0
@@ -73,14 +76,26 @@ const GetCategories = () => {
         setSearchParams(searchParams);
     };
 
+
+    let isAdmin = false;
+
+    console.log(isAdmin)
+
+    user?.roles.forEach(role=> {
+        if (role.toLowerCase().includes('admin'))
+            isAdmin=true;
+    });
+
     return (
         <>
             <h1>List of Categories</h1>
-            <Link to={"/categories/add"}>
-                <Button type="primary" style={{margin: '5px'}}>
-                    ADD +
-                </Button>
-            </Link>
+            {isAdmin &&(
+                <Link to={"/dashboard/categories/add"}>
+                    <Button type="primary" style={{margin: '5px'}}>
+                        ADD +
+                    </Button>
+                </Link>
+            )}
                     <Collapse defaultActiveKey={0}>
                         <Collapse.Panel key={1} header={"Search Panel"}>
                             <Row gutter={16}>

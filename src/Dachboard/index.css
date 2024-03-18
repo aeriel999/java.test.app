@@ -8,12 +8,17 @@
 }
 
 .header{
-    min-height: 7vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px;
+    min-height: 10vh;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .content{
-    min-height: 93vh;
+    min-height: 90vh;
     margin: 10px;
     background-color: #F1F5F9;
 }

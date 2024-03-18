@@ -8,6 +8,7 @@ import {useNotification} from '../../hooks/notification';
 import {Status} from '../../utils/enums';
 import {ILogin} from "../../Interfaces/account";
 import {login} from "../../store/accounts/account.actions.ts";
+import {IsAdmin} from "../../utils/storage/IsAdmin.ts";
 
 const Login : React.FC = () => {
     const navigate = useNavigate();
@@ -20,7 +21,12 @@ const Login : React.FC = () => {
         try {
             const response = await dispatch(login(values));
             unwrapResult(response);
-            navigate('/');
+
+            if( IsAdmin(response.payload.token))
+                navigate('/dashboard');
+            else
+                navigate('/');
+
         } catch (error) {
             handleError(error);
         }
@@ -59,7 +65,7 @@ const Login : React.FC = () => {
             },
     {
         required: true,
-            message: 'Будь ласка введіть ваш e-mail!',
+            message: 'Please enter your  e-mail!',
     },
 ]}
 >
@@ -69,7 +75,7 @@ const Login : React.FC = () => {
     <Form.Item
     label="Password"
     name="password"
-    rules={[{required: true, message: 'Будь ласка введіть ваш пароль!'}]}
+    rules={[{required: true, message: 'Please enter a password!'}]}
         >
         <Input.Password/>
         </Form.Item>

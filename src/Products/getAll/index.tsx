@@ -4,10 +4,19 @@ import http_common from "../../http_common.ts";
 import {useEffect, useState} from "react";
 import {ICategoryName, IGetProducts, IProductSearch} from "../types.ts";
 import ProductCard from "./ProductCard.tsx";
+import {useAppSelector} from "../../hooks/redux";
 
 const GetProducts = () => {
     const [categories, setCategories] = useState<ICategoryName[]>([]);
 
+    const {user} = useAppSelector(state => state.account);
+
+    let isAdmin = false;
+
+    user?.roles.forEach(role=> {
+        if (role.toLowerCase().includes('admin'))
+            isAdmin=true;
+    });
    // const categoriesData = categories?.map(item => ({label: item.name, value: item.id}));
 
     const [data, setData] = useState<IGetProducts>({
@@ -100,11 +109,13 @@ const GetProducts = () => {
     return (
         <>
             <h1>List of Products</h1>
-            <Link to={"/products/add"}>
-                <Button type="primary" style={{margin: '5px'}}>
-                    ADD +
-                </Button>
-            </Link>
+            {isAdmin &&(
+                <Link to={"/dashboard/products/add"}>
+                    <Button type="primary" style={{margin: '5px'}}>
+                        ADD +
+                    </Button>
+                </Link>
+                )}
             <Collapse defaultActiveKey={0}>
                 <Collapse.Panel key={1} header={"Search Panel"}>
                     <Row gutter={16}>

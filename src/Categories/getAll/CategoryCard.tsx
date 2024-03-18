@@ -5,6 +5,7 @@ import {Button, Card, Col, Popconfirm, Typography} from "antd";
 import Meta from "antd/es/card/Meta";
 import {DeleteOutlined, EditOutlined} from '@ant-design/icons';
 import {Link} from "react-router-dom";
+import {useAppSelector} from "../../hooks/redux";
 
 const { Title } = Typography;
 
@@ -16,6 +17,14 @@ interface ICategoryCardProps {
 const CategoryCard: React.FC<ICategoryCardProps> = (props) => {
     const {item, handleDelete} = props;
     const {id, name, image, description} = item;
+    const { user} = useAppSelector(state => state.account);
+
+    let isAdmin = false;
+
+    user?.roles.forEach(role=> {
+        if (role.toLowerCase().includes('admin'))
+            isAdmin=true;
+    });
 
 console.log("image", image)
     return (
@@ -29,43 +38,45 @@ console.log("image", image)
                         <img
                             style={{height: '300px', objectFit: 'contain'}}
                             alt={name}
-                           // src={image ? `${APP_ENV.BASE_URL}/uploading/300_${image}` : NotImage}
+                            // src={image ? `${APP_ENV.BASE_URL}/uploading/300_${image}` : NotImage}
                             src={image}
-
-
                         />
                     }
-                    actions={[
-                        <Link to={`/products/add/${id}`}>
-                            <Button type="link"  >
-                                Add Product +
-                            </Button>
-                        </Link>,
-                        <Link to={`/categories/edit/${id}`}>
-                            <Button type="primary" icon={<EditOutlined/>}>
-                                Edit
-                            </Button>
-                        </Link>,
-
-                        <Popconfirm
-                            title="Are you sure to delete this category?"
-                            onConfirm={() => handleDelete(id)}
-                            okText="Yes"
-                            cancelText="No"
-                        >
-                            <Button icon={<DeleteOutlined/>}>
-                                Delete
-                            </Button>
-                        </Popconfirm>
-                    ]}
                 >
-
                     <Meta
                         title={name}
                         description={
                             <Title level={5} type="success">{description.substring(0, 35)} ...</Title>
                         }
                     />
+
+                    {/* Render actions only if the user is an admin */}
+                    {isAdmin && (
+                        <>
+                            <Link to={`/dashboard/products/add/${id}`}>
+                                <Button type="link">
+                                    Add Product +
+                                </Button>
+                            </Link>
+
+                            <Link to={`/dashboard/categories/edit/${id}`}>
+                                <Button type="primary" icon={<EditOutlined/>}>
+                                    Edit
+                                </Button>
+                            </Link>
+
+                            <Popconfirm
+                                title="Are you sure to delete this category?"
+                                onConfirm={() => handleDelete(id)}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                                <Button icon={<DeleteOutlined/>}>
+                                    Delete
+                                </Button>
+                            </Popconfirm>
+                        </>
+                    )}
                 </Card>
             </Col>
         </>

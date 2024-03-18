@@ -1,4 +1,4 @@
-import {Avatar, Button, Input, Layout, Menu, Space,} from 'antd';
+import {Avatar, Button,  Layout, Menu} from 'antd';
 import {Link, useLocation} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from "../../hooks/redux";
 import ButtonGroup from "antd/es/button/button-group";
@@ -8,7 +8,7 @@ import {APP_ENV} from "../../env";
 
 
 const { Header } = Layout;
-const { Search } = Input;
+// const { Search } = Input;
 
 const items1 = ['Home', 'Products'].map((key) => ({
     key,
@@ -43,15 +43,15 @@ const DefaultHeader = () => {
                     </Menu.Item>
                 ))}
             </Menu>
-            <Space direction="horizontal">
-                <Search
-                    placeholder="input category name"
-                   // onSearch={onSearch}
-                    style={{ width: 200, margin: 15 }}
-                    enterButton
-                />
+            {/*<Space direction="horizontal">*/}
+            {/*    <Search*/}
+            {/*        placeholder="input category name"*/}
+            {/*       // onSearch={onSearch}*/}
+            {/*        style={{ width: 200, margin: 15 }}*/}
+            {/*        enterButton*/}
+            {/*    />*/}
 
-            </Space>
+            {/*</Space>*/}
             {isLogin ? (
                 <ButtonGroup size="large">
                     <Button
@@ -71,7 +71,9 @@ const DefaultHeader = () => {
             ) : (
                 <>
                 <Link to="account/login" style={{color: 'inherit', textDecoration: 'none'}}>
-                    <Button type="primary" icon={<UserOutlined/>}>
+                    <Button
+                        style={{marginRight: "5px"}}
+                        type="primary" icon={<UserOutlined/>}>
                         Sign-in
                     </Button>
                 </Link>
