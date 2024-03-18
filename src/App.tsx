@@ -10,55 +10,51 @@ import EditProduct from "./Products/update";
 import Login from "./views/login";
 import Register from "./views/register";
 import DashboardLayout from "./Dachboard/layots/_DashboardLayout.tsx";
-import ProfilePage from "./Dachboard/main";
-import {useAppDispatch} from "./hooks/redux";
-import {getLocalStorage} from "./utils/storage/localStorageUtils.ts";
-import {useEffect} from "react";
-import {isTokenActive} from "./utils/storage/isTokenActive.ts";
-import {autoLogin} from "./store/accounts/account.slice.ts";
+import {useAppSelector} from "./hooks/redux";
+import NotFoundPage from "./errors/notFound.tsx";
 
 const App : React.FC = () => {
-    const dispatch = useAppDispatch();
-    const token = getLocalStorage('authToken');
 
-    useEffect(() => {
-        if (typeof token === 'string') {
-            if (isTokenActive(token)) {
-                dispatch(autoLogin(token));
-            }
-        }
-    }, [dispatch, token]);
+    const {isLogin, user} = useAppSelector(state => state.account);
+
+    let isAdmin = false;
+
+    user?.roles.forEach(role=> {
+        if (role.toLowerCase().includes('admin'))
+            isAdmin=true;
+    });
 
     return (
-        <>
-            <Routes>
-                <Route path="/" element={<DefaultLayout />}>
-                    <Route index element={<GetCategories />} />
-                    <Route path="/categories/:currentPage" element={<GetCategories/>}/>
-                    <Route path="/home" element={<GetCategories/>}/>
-                    <Route path="/categories/search/:searchTerm" element={<GetCategories />} />
-                    <Route path="/categories/add" element={<AddCategory/>}/>
-                    <Route path="/products/add/:categoryId" element={<AddProduct/>}/>
-                    <Route path="/products/add/" element={<AddProduct/>}/>
-                    <Route path="/product/edit/:productId" element={<EditProduct/>}/>
-                    <Route path="/products" element={<GetProducts/>}/>
-                    <Route path="/categories/edit/:categoryId" element={<EditCategory/>}/>
-                    <Route path={"account/login"} element={<Login/>}/>
-                    <Route path={"account/register"} element={<Register/>}/>
-                    {/*<Route path={"/register"} element={<Register/>} />*/}
-                    {/*<Route path={"/login"} element={<Login/>} />*/}
-                    {/*<Route path={"/products"} element={<ProductCreatePage/>} />*/}
-                </Route>
-                <Route path={"/dashboard"} element={<DashboardLayout/>}>
-                    <Route index element={<ProfilePage />} />
-                    <Route path="/dashboard/categories/search/:searchTerm" element={<GetCategories />} />
-                </Route>
-            </Routes>
-        </>
+        <Routes>
+            <Route path="/" element={<DefaultLayout />}>
+                <Route index element={<GetCategories />} />
+                <Route path="/home" element={<GetCategories/>}/>
+                <Route path="/categories/search/:searchTerm" element={<GetCategories />} />
+                <Route path="/products" element={<GetProducts/>}/>
+                <Route path={"account/login"} element={<Login/>}/>
+                <Route path={"account/register"} element={<Register/>}/>
+            </Route>
+
+            {isLogin && (
+                <>
+                (isAdmin && (
+                    <Route path={"/dashboard"} element={<DashboardLayout/>}>
+                        <Route index element={<GetCategories />} />
+                        <Route path="/dashboard/categories/search/:searchTerm" element={<GetCategories />} />
+                        <Route path="/dashboard/categories/add" element={<AddCategory/>}/>
+                        <Route path="/dashboard/categories/edit/:categoryId" element={<EditCategory/>}/>
+                        <Route path="/dashboard/products" element={<GetProducts/>}/>
+                        <Route path="/dashboard/products/add/:categoryId" element={<AddProduct/>}/>
+                        <Route path="/dashboard/products/add/" element={<AddProduct/>}/>
+                        <Route path="/dashboard/product/edit/:productId" element={<EditProduct/>}/>
+                    </Route>   ))
+                </>
+            )}
+            <Route path="*" element={<NotFoundPage />} />
+        </Routes>
     );
 }
 
 export default App
-
 
 

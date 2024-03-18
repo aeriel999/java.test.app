@@ -1,10 +1,13 @@
-import React  from 'react';
+import React, { useState } from 'react';
 import {
-    AppstoreOutlined,
-     SettingOutlined,
+    DesktopOutlined,
+    PieChartOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import {  Menu } from 'antd';
+import { Layout, Menu } from 'antd';
+import {Link} from "react-router-dom";
+
+const {  Sider } = Layout;
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -13,58 +16,38 @@ function getItem(
     key: React.Key,
     icon?: React.ReactNode,
     children?: MenuItem[],
-    type?: 'group',
 ): MenuItem {
     return {
         key,
         icon,
         children,
         label,
-        type,
     } as MenuItem;
 }
 
-const items: MenuProps['items'] = [
-    getItem('Categories', 'sub1', <AppstoreOutlined />, [
-        getItem('List of All Categories', '1'),
-        getItem('Add New Category', '2'),
-    ]),
-
-    { type: 'divider' },
-
-    getItem('Products', 'sub2', <AppstoreOutlined />, [
-        getItem('List of All Products', '3'),
-        getItem('Add New Product', '4'),
-    ]),
-
-    { type: 'divider' },
-
-    getItem('Test', 'sub4', <SettingOutlined />, [
-        getItem('Test', '5'),
-        getItem('OTest', '66'),
-        getItem('Test', '7'),
-        getItem('Test', '8'),
-    ]),
-
+const items: MenuItem[] = [
+    getItem(<Link to={"/home"} >Back To Site</Link>, '1', <PieChartOutlined />),
+    getItem(<Link to={"/home"} >Go To Blog</Link>, '2', <DesktopOutlined />),
+    getItem(<Link to={"/dashboard/categories/search/:searchTerm"} >Categories</Link>, '3', <DesktopOutlined />),
+    getItem(<Link to={"/dashboard/products"}>Products</Link>, '4', <DesktopOutlined />),
 ];
 
 const SideMenu = () => {
 
-    const onClick: MenuProps['onClick'] = (e) => {
-        console.log('click ', e);
-    };
+    const [collapsed, setCollapsed] = useState(false);
 
     return (
-        <>
-            <Menu className={"sideMenuBlock"}
-                  onClick={onClick}
-                  theme="dark"
+        <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}
+       >
+            <Menu
+                theme="dark"
                   defaultSelectedKeys={['1']}
-                  defaultOpenKeys={['sub1']}
                   mode="inline"
                   items={items}
-            />
-        </>
+                style={{ marginTop: '15px' }}>
+
+            </Menu>
+        </Sider>
     );
 }
 
