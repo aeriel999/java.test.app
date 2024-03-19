@@ -1,28 +1,16 @@
-import {Button, Card, Col, Popconfirm, Typography} from "antd";
+import { Card, Col, Typography} from "antd";
 import Meta from "antd/es/card/Meta";
-import {DeleteOutlined, EditOutlined} from '@ant-design/icons';
-import {Link} from "react-router-dom";
-import {IProductItem} from "../types.ts";
-import {useAppSelector} from "../../hooks/redux";
+import {IProductItem} from "../../components/admin/products/types.ts";
 
 const {Title} = Typography;
 
 interface IProductCardProps {
     item: IProductItem,
-    handleDelete: (id: number) => void
 }
 
 const ProductCard: React.FC<IProductCardProps> = (props) => {
-    const {item, handleDelete} = props;
-    const {id, name, files, description, price} = item;
-    const { user} = useAppSelector(state => state.account);
-
-    let isAdmin = false;
-
-    user?.roles.forEach(role=> {
-        if (role.toLowerCase().includes('admin'))
-            isAdmin=true;
-    });
+    const {item} = props;
+    const {name, files, description, price} = item;
 
     return (
         <>
@@ -37,8 +25,6 @@ const ProductCard: React.FC<IProductCardProps> = (props) => {
                             alt={name}
                             // src={image ? `${APP_ENV.BASE_URL}/uploading/300_${image}` : NotImage}
                             src={files[0]}
-
-
                         />
                     }
                 >
@@ -55,28 +41,6 @@ const ProductCard: React.FC<IProductCardProps> = (props) => {
                             </>
                         }
                     />
-
-                    {isAdmin && (
-                        <>
-                            <Link to={`/dashboard/product/edit/${id}`}>
-                                <Button type="primary" icon={<EditOutlined/>}>
-                                    Edit
-                                </Button>
-                            </Link>,
-
-                            <Popconfirm
-                                title="Are you sure to delete this category?"
-                                onConfirm={() => handleDelete(id)}
-                                okText="Yes"
-                                cancelText="No"
-                            >
-                                <Button icon={<DeleteOutlined/>}>
-                                    Delete
-                                </Button>
-                            </Popconfirm>
-                        </>
-                    )}
-
                 </Card>
             </Col>
         </>

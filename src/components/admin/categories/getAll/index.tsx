@@ -1,10 +1,11 @@
 import {Button, Col, Collapse, Form, Input, Pagination, Row} from "antd";
 import {Link, useSearchParams} from "react-router-dom";
 import {ICategorySearch, IGetCategories} from "../types.ts";
-import http_common from "../../http_common.ts";
 import {useEffect, useState} from "react";
 import CategoryCard from "./CategoryCard.tsx";
-import {useAppSelector} from "../../hooks/redux";
+import {useAppSelector} from "../../../../hooks/redux";
+import http_common from "../../../../http_common";
+
 
 const GetCategories = () => {
     const {user} = useAppSelector(state => state.account);

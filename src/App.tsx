@@ -1,22 +1,25 @@
 import { Routes, Route } from "react-router-dom";
 import '/node_modules/antd/dist/reset.css';
-import DefaultLayout from "./container/layots/_Layout.tsx";
-import GetCategories from "./Categories/getAll";
-import AddCategory from "./Categories/create";
-import EditCategory from "./Categories/update";
-import AddProduct from "./Products/create";
-import GetProducts from "./Products/getAll";
-import EditProduct from "./Products/update";
-import Login from "./views/login";
-import Register from "./views/register";
-import DashboardLayout from "./Dachboard/layots/_DashboardLayout.tsx";
+import Login from "./views/Login";
+import Register from "./views/Register";
 import {useAppSelector} from "./hooks/redux";
 import NotFoundPage from "./errors/notFound.tsx";
+import DefaultLayout from "./components/container/site/_Layout.tsx";
+import GetCategories from "./components/admin/categories/getAll";
+import GetProducts from "./components/admin/products/getAll";
+import DashboardLayout from "./components/container/dashboard/layots/_DashboardLayout.tsx";
+import AddCategory from "./components/admin/categories/create";
+import EditCategory from "./components/admin/categories/update";
+import AddProduct from "./components/admin/products/create";
+import ProductEditPage from "./components/admin/products/update";
 
 const App : React.FC = () => {
 
     const {isLogin, user} = useAppSelector(state => state.account);
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let isAdmin = false;
 
     user?.roles.forEach(role=> {
@@ -31,8 +34,8 @@ const App : React.FC = () => {
                 <Route path="/home" element={<GetCategories/>}/>
                 <Route path="/categories/search/:searchTerm" element={<GetCategories />} />
                 <Route path="/products" element={<GetProducts/>}/>
-                <Route path={"account/login"} element={<Login/>}/>
-                <Route path={"account/register"} element={<Register/>}/>
+                <Route path={"account/Login"} element={<Login/>}/>
+                <Route path={"account/Register"} element={<Register/>}/>
             </Route>
 
             {isLogin && (
@@ -46,7 +49,7 @@ const App : React.FC = () => {
                         <Route path="/dashboard/products" element={<GetProducts/>}/>
                         <Route path="/dashboard/products/add/:categoryId" element={<AddProduct/>}/>
                         <Route path="/dashboard/products/add/" element={<AddProduct/>}/>
-                        <Route path="/dashboard/product/edit/:productId" element={<EditProduct/>}/>
+                        <Route path="/dashboard/product/edit/:productId" element={<ProductEditPage/>}/>
                     </Route>   ))
                 </>
             )}

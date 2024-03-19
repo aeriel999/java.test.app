@@ -2,11 +2,11 @@ import {Button, Form, Input, Row, Select, Upload} from "antd";
 import { PlusOutlined} from '@ant-design/icons';
 import type {UploadChangeParam} from 'antd/es/upload';
 import {useNavigate, useParams} from "react-router-dom";
-import http_common from "../../http_common.ts";
 import TextArea from "antd/es/input/TextArea";
 import {ICategoryName, IProductCreate} from "../types.ts";
-import {IUploadedFile} from "../../Categories/types.ts";
 import {useEffect, useState} from "react";
+import http_common from "../../../../http_common.ts";
+import {IUploadedFile} from "../../categories/types.ts";
 
 const AddProduct = () => {
     const { categoryId } = useParams();
@@ -48,7 +48,8 @@ console.log("categoryId", categoryId)
         {
             const data : IProductCreate = {
                 ...values,
-                // @ts-ignore
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 category_id: categoryId
             }
 
@@ -78,6 +79,8 @@ console.log("categoryId", categoryId)
             >
                 {categoryId ? (
                     <h1>
+                        {/*eslint-disable-next-line @typescript-eslint/ban-ts-comment*/}
+                        {/*@ts-expect-error*/}
                         Category: {(categories.find(category => category.id == categoryId))?.name}
                     </h1>
                 ) : (

@@ -4,7 +4,7 @@ import {ILogin, IRegister} from "../../Interfaces/account";
 import {handleAxiosError} from "../../utils/errors";
 
 export const login = createAsyncThunk(
-    'account/login',
+    'account/Login',
     async (payload : ILogin, { rejectWithValue }) => {
         try {
             const response = await apiClient.post('/api/account/login', payload);
@@ -16,7 +16,7 @@ export const login = createAsyncThunk(
 );
 
 export const register = createAsyncThunk(
-    'account/register',
+    'account/Register',
     async (payload : IRegister, { rejectWithValue }) => {
         try {
             const response = await apiClient.post('/api/account/register', payload);

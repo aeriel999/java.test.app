@@ -1,23 +1,12 @@
 import {Button, Col, Collapse, Form, Input, Pagination, Row, Select} from "antd";
-import {Link, useSearchParams} from "react-router-dom";
-import http_common from "../../http_common.ts";
+import {useSearchParams} from "react-router-dom";
 import {useEffect, useState} from "react";
-import {ICategoryName, IGetProducts, IProductSearch} from "../types.ts";
-import ProductCard from "./ProductCard.tsx";
-import {useAppSelector} from "../../hooks/redux";
+import http_common from "../../http_common.ts";
+import ProductCard from "./PdoductCard.tsx";
+import {ICategoryName, IGetProducts, IProductSearch} from "../../components/admin/products/types.ts";
 
 const GetProducts = () => {
     const [categories, setCategories] = useState<ICategoryName[]>([]);
-
-    const {user} = useAppSelector(state => state.account);
-
-    let isAdmin = false;
-
-    user?.roles.forEach(role=> {
-        if (role.toLowerCase().includes('admin'))
-            isAdmin=true;
-    });
-   // const categoriesData = categories?.map(item => ({label: item.name, value: item.id}));
 
     const [data, setData] = useState<IGetProducts>({
         list: [],
@@ -74,17 +63,7 @@ const GetProducts = () => {
         }
     }, [JSON.stringify(formParams)]);
 
-    const {list,  totalCount } = data;
-
-    //Todo Make new request after deleting
-    const handleDelete = async (categoryId: number) => {
-        try {
-            await http_common.delete(`/api/categories/${categoryId}`);
-            setData({ ...data, list: list.filter(x => x.id != categoryId)});
-        } catch (error) {
-            throw new Error(`Error: ${error}`);
-        }
-    };
+    const {totalCount } = data;
 
     const handlePageChange = async (page: number, newPageSize: number) => {
         findCategories({...formParams, page, size: newPageSize});
@@ -108,14 +87,8 @@ const GetProducts = () => {
 
     return (
         <>
-            <h1>List of Products</h1>
-            {isAdmin &&(
-                <Link to={"/dashboard/products/add"}>
-                    <Button type="primary" style={{margin: '5px'}}>
-                        ADD +
-                    </Button>
-                </Link>
-                )}
+            <h1 style={{textAlign: "center"}}>List of Products</h1>
+
             <Collapse defaultActiveKey={0}>
                 <Collapse.Panel key={1} header={"Search Panel"}>
                     <Row gutter={16}>
@@ -199,7 +172,7 @@ const GetProducts = () => {
                             <h2>List is Empty</h2>
                         ) : (
                             data.list.map((item) =>
-                                <ProductCard key={item.id} item={item} handleDelete={handleDelete} />,
+                                <ProductCard key={item.id} item={item}  />,
                             )
                         )}
                     </Row>

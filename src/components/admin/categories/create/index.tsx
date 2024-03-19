@@ -1,59 +1,21 @@
-import React, {useEffect, useState} from 'react';
-import {useNavigate, useParams} from 'react-router-dom';
-import {Button, Form, Input, Row, Upload, UploadFile, UploadProps} from "antd";
-import type {UploadChangeParam} from "antd/es/upload";
-import { PlusOutlined} from "@ant-design/icons";
-import { ICategoryEdit, IUploadedFile} from "../types.ts";
-import http_common from "../../http_common.ts";
+import {Button, Form, Input, Row, Upload} from "antd";
+import { PlusOutlined} from '@ant-design/icons';
+import type {UploadChangeParam} from 'antd/es/upload';
+import {ICategoryCreate, IUploadedFile} from "../types.ts";
+import {useNavigate} from "react-router-dom";
 import TextArea from "antd/es/input/TextArea";
+import http_common from "../../../../http_common";
 
-const EditCategory: React.FC = () => {
-    const {categoryId} = useParams(); // Get the categoryId from the URL params
-    const [categoryDetails, setCategoryDetails] = useState<any>(null);
-    const BASE_URL: string = import.meta.env.VITE_API_URL as string;
+
+const AddCategory = () => {
+
     const navigate = useNavigate();
-    const [fileList, setFileList] = useState<UploadFile[]>([]);
 
-    const [form] = Form.useForm<ICategoryEdit>();
+    const [form] = Form.useForm<ICategoryCreate>();
 
-    useEffect(() => {
-        const fetchCategory = async () => {
-
-            try {
-              const  details =  await http_common.get(`/api/categories/${categoryId}`);
-
-                setCategoryDetails(details.data);
-
-                const imgUrl = BASE_URL + "/uploading/150_" + details.data.image;
-                setFileList([
-                    {
-                        uid: '-1',
-                        name: 'image.png',
-                        status: 'done',
-                        url: imgUrl,
-                    }
-                ]);
-
-            } catch (error) {
-                throw new Error(`Error: ${error}`);
-            }
-        };
-
-        fetchCategory();
-
-
-    }, [categoryId]);
-
-    if (!categoryDetails) {
-        // Optionally, you can show a loading indicator or redirect to an error page
-        return <p>Loading...</p>;
-    }
-
-   // const imgUrl = BASE_URL + "/uploading/150_" + categoryDetails.image;
-
-    const onSubmit = async (values: ICategoryEdit) => {
+    const onSubmit = async (values: ICategoryCreate) => {
         try {
-            await http_common.put(`/api/categories/${categoryId}`, values, {
+            await http_common.post("/api/categories", values, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -65,17 +27,12 @@ const EditCategory: React.FC = () => {
         }
     }
 
-    const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) =>
-        setFileList(newFileList);
-
     return (
-
         <>
-            <h1>Edit Category</h1>
+            <h1>Add Category</h1>
             <Row gutter={16}>
                 <Form form={form}
                       onFinish={onSubmit}
-                      initialValues={categoryDetails}
                       layout={"vertical"}
                       style={{
                           minWidth: '100%',
@@ -85,10 +42,6 @@ const EditCategory: React.FC = () => {
                           padding: 20,
                       }}
                 >
-                    <Form.Item
-                        name="id"
-                       hidden
-                    />
                     <Form.Item
                         label="Name"
                         name="name"
@@ -120,15 +73,15 @@ const EditCategory: React.FC = () => {
                             const image = e?.fileList[0] as IUploadedFile;
                             return image?.originFileObj;
                         }}
+                        rules={[{required: true, message: 'Choose image for category!'}]}
                     >
                         <Upload
                             showUploadList={{showPreviewIcon: false}}
                             beforeUpload={() => false}
                             accept="image/*"
                             listType="picture-card"
-                            fileList={fileList}
                             maxCount={1}
-                            onChange={handleChange}
+
                         >
                             <div>
                                 <PlusOutlined/>
@@ -140,16 +93,15 @@ const EditCategory: React.FC = () => {
                         <Button style={{margin: 10}} type="primary" htmlType="submit">
                             Add
                         </Button>
-                        <Button style={{margin: 10}} htmlType="button" onClick={() => {
-                            navigate('/')
-                        }}>
+                        <Button style={{margin: 10}} htmlType="button" onClick={() =>{ navigate('/')}}>
                             Cancel
                         </Button>
                     </Row>
                 </Form>
             </Row>
         </>
-    );
-};
+    )
 
-export default EditCategory;
+}
+
+export default AddCategory;

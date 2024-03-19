@@ -11,9 +11,10 @@ import {
     horizontalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import {DndContext, PointerSensor, useSensor} from '@dnd-kit/core';
-import http_common from "../../http_common.ts";
-import {APP_ENV} from "../../env";
-import DraggableUploadListItem from "../../common/DraggableUploadListItem.tsx";
+import http_common from "../../../../http_common.ts";
+import {APP_ENV} from "../../../../env";
+import DraggableUploadListItem from "../../../common/DraggableUploadListItem.tsx";
+
 
 const ProductEditPage : React.FC = () => {
     const navigate = useNavigate();
