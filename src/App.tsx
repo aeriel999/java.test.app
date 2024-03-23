@@ -13,6 +13,10 @@ import EditCategory from "./components/admin/categories/update";
 import AddProduct from "./components/admin/products/create";
 import ProductEditPage from "./components/admin/products/update";
 
+import MainBlogPage from "./components/blog";
+import DefaultBlogLayout from "./components/container/blog/_BlogLayot.tsx";
+
+
 const App : React.FC = () => {
 
     const {isLogin, user} = useAppSelector(state => state.account);
@@ -36,6 +40,7 @@ const App : React.FC = () => {
                 <Route path="/products" element={<GetProducts/>}/>
                 <Route path={"account/Login"} element={<Login/>}/>
                 <Route path={"account/Register"} element={<Register/>}/>
+
             </Route>
 
             {isLogin && (
@@ -54,6 +59,10 @@ const App : React.FC = () => {
                 </>
             )}
             <Route path="*" element={<NotFoundPage />} />
+
+            <Route path={"/blog"} element={<DefaultBlogLayout/>}>
+                 <Route index element={<MainBlogPage/>}/>
+             </Route>
         </Routes>
     );
 }

@@ -27,7 +27,7 @@ function getItem(
 
 const items: MenuItem[] = [
     getItem(<Link to={"/Home"} >Back To Site</Link>, '1', <PieChartOutlined />),
-    getItem(<Link to={"/Home"} >Go To Blog</Link>, '2', <DesktopOutlined />),
+    getItem(<Link to={"/blog"} >Go To Blog</Link>, '2', <DesktopOutlined />),
     getItem(<Link to={"/dashboard/categories/search/:searchTerm"} >Categories</Link>, '3', <DesktopOutlined />),
     getItem(<Link to={"/dashboard/products"}>Products</Link>, '4', <DesktopOutlined />),
 ];

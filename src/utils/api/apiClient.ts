@@ -6,7 +6,7 @@ import {isTokenActive} from "../storage/isTokenActive.ts";
 interface IApiClientConfig extends AxiosRequestConfig {
     baseURL: string;
 }
-
+console.log("APP_ENV.BASE_URL",APP_ENV.BASE_URL);
 export const apiClient: AxiosInstance = axios.create({
     baseURL: APP_ENV.BASE_URL,
 } as IApiClientConfig);

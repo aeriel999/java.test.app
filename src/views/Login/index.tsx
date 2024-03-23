@@ -36,7 +36,7 @@ const Login : React.FC = () => {
         <Spin  tip="Loading" size="large" spinning={status === Status.LOADING}>
     <Row gutter={16}>
         {contextHolder}
-        <Divider orientation="left">Вхід</Divider>
+        <Divider orientation="left">Login</Divider>
         <Flex vertical style={{width: '100%'}} align="center" justify="center">
 
     <Image
