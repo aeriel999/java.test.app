@@ -36,10 +36,7 @@ export const accountsSlice = createSlice({
     name: 'account',
     initialState,
     reducers: {
-        register: (state, action: PayloadAction<string>) => {
-            updateUserState(state, action.payload);
-        },
-        //Залогінити користувача
+
         autoLogin: (state, action: PayloadAction<string>) => {
             updateUserState(state, action.payload);
         },

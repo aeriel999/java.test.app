@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import accountReducer from "./accounts/account.slice.ts";
+import bloReducer from "./blog/blog.slice.ts";
 
 export const store = configureStore({
     reducer: {
         //category: categoryReducer,
-        account: accountReducer
+        account: accountReducer,
+        blog: bloReducer
     },
 });
 

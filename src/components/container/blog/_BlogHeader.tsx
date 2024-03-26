@@ -1,5 +1,5 @@
 // MainMenu.tsx
-import '../../blog/index.css';
+
 import React from 'react';
 import {Menu, type MenuProps} from 'antd';
 import { HomeOutlined,  ReadOutlined} from '@ant-design/icons';
@@ -31,9 +31,10 @@ const BlogMainMenu: React.FC = () => {
     return (
         <Menu theme="light" mode="horizontal"  items={items}
               style={{
-                  minHeight: "200px",
-                  height: "20vh",
-                  background: 'url(https://seeklogo.com/images/S/summer-logo-D3E4419B03-seeklogo.com.png)  top center / auto 200px no-repeat fixed padding-box content-box transparent'
+                  minHeight: "50px",
+                  backgroundColor: "transparent",
+                  backdropFilter: "blur(10px)",
+                  marginBottom: "75px"
               }}
               selectedKeys={[]} >
           {/*<div style={{*/}
