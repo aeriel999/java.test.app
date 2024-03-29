@@ -12,13 +12,16 @@ import AddCategory from "./components/admin/categories/create";
 import EditCategory from "./components/admin/categories/update";
 import AddProduct from "./components/admin/products/create";
 import ProductEditPage from "./components/admin/products/update";
-
 import MainBlogPage from "./components/blog";
 import DefaultBlogLayout from "./components/container/blog/_BlogLayot.tsx";
+import PostPage from "./components/blog/PostPage.tsx";
+import {HelmetProvider} from "react-helmet-async";
+import PostListCategoryPage from "./components/blog/PostListCategory.tsx";
+import PostListTagPage from "./components/blog/PostListTag.tsx";
+
 
 
 const App : React.FC = () => {
-
     const {isLogin, user} = useAppSelector(state => state.account);
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -32,39 +35,47 @@ const App : React.FC = () => {
     });
 
     return (
-        <Routes>
-            <Route path="/" element={<DefaultLayout />}>
-                <Route index element={<GetCategories />} />
-                <Route path="/home" element={<GetCategories/>}/>
-                <Route path="/categories/search/:searchTerm" element={<GetCategories />} />
-                <Route path="/products" element={<GetProducts/>}/>
-                <Route path={"account/Login"} element={<Login/>}/>
-                <Route path={"account/Register"} element={<Register/>}/>
-
-            </Route>
-
-            {isLogin && (
-                <>
-                (isAdmin && (
-                    <Route path={"/dashboard"} element={<DashboardLayout/>}>
+        <HelmetProvider>{
+                <Routes>
+                    <Route path="/" element={<DefaultLayout />}>
                         <Route index element={<GetCategories />} />
-                        <Route path="/dashboard/categories/search/:searchTerm" element={<GetCategories />} />
-                        <Route path="/dashboard/categories/add" element={<AddCategory/>}/>
-                        <Route path="/dashboard/categories/edit/:categoryId" element={<EditCategory/>}/>
-                        <Route path="/dashboard/products" element={<GetProducts/>}/>
-                        <Route path="/dashboard/products/add/:categoryId" element={<AddProduct/>}/>
-                        <Route path="/dashboard/products/add/" element={<AddProduct/>}/>
-                        <Route path="/dashboard/product/edit/:productId" element={<ProductEditPage/>}/>
-                    </Route>   ))
-                </>
-            )}
-            <Route path="*" element={<NotFoundPage />} />
+                        <Route path="/home" element={<GetCategories/>}/>
+                        <Route path="/categories/search/:searchTerm" element={<GetCategories />} />
+                        <Route path="/products" element={<GetProducts/>}/>
+                        <Route path={"account/Login"} element={<Login/>}/>
+                        <Route path={"account/Register"} element={<Register/>}/>
 
-            <Route path={"/blog"} element={<DefaultBlogLayout/>}>
-                 <Route index element={<MainBlogPage/>}/>
-             </Route>
-        </Routes>
+                    </Route>
+
+                    {isLogin && (
+                        <>
+                        (isAdmin && (
+                            <Route path={"/dashboard"} element={<DashboardLayout/>}>
+                                <Route index element={<GetCategories />} />
+                                <Route path="/dashboard/categories/search/:searchTerm" element={<GetCategories />} />
+                                <Route path="/dashboard/categories/add" element={<AddCategory/>}/>
+                                <Route path="/dashboard/categories/edit/:categoryId" element={<EditCategory/>}/>
+                                <Route path="/dashboard/products" element={<GetProducts/>}/>
+                                <Route path="/dashboard/products/add/:categoryId" element={<AddProduct/>}/>
+                                <Route path="/dashboard/products/add/" element={<AddProduct/>}/>
+                                <Route path="/dashboard/product/edit/:productId" element={<ProductEditPage/>}/>
+                            </Route>   ))
+                        </>
+                    )}
+                    <Route path="*" element={<NotFoundPage />} />
+
+                    <Route path={"/blog"} element={<DefaultBlogLayout/>}>
+                         <Route index element={<MainBlogPage/>}/>
+                        <Route path='/blog/show/:postId/:urlSlug'  element={<PostPage />} />
+                        <Route path='/blog/:categoryUrlSlug/:categoryId/'  element={<PostListCategoryPage />} />
+                        <Route path='/blog/tag/:tagUrlSlug/:tagId/'  element={<PostListTagPage />} />
+
+                     </Route>
+                </Routes>
+            }</HelmetProvider>
     );
+
+
 }
 
 export default App
